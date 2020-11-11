@@ -200,8 +200,6 @@ type EndPoint interface {
 	WritePkg(pkg interface{}, timeout time.Duration) error
 	//write bytes to endpoint
 	WriteBytes([]byte) error
-
-	//write bytes array to endpoint
 	WriteBytesArray(...[]byte) error
 }
 
