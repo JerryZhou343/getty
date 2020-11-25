@@ -35,6 +35,7 @@ import (
 	log "github.com/AlexStocks/log4go"
 	gxbytes "github.com/dubbogo/gost/bytes"
 	"github.com/dubbogo/gost/net"
+	gxsync "github.com/dubbogo/gost/sync"
 	"github.com/gorilla/websocket"
 	jerrors "github.com/juju/errors"
 )
@@ -412,6 +413,10 @@ func (c *client) RunEventLoop(newSession NewSessionCallback) {
 	c.reConnect()
 }
 
+func (c *client) GetTaskPool() *gxsync.TaskPool {
+	return c.tPool
+}
+
 // a for-loop connect to make sure the connection pool is valid
 func (c *client) reConnect() {
 	var num, max, times, interval int
@@ -473,25 +478,25 @@ func (c *client) Close() {
 	c.wg.Wait()
 }
 
-func (c *client) WritePkg(pkg interface{}, timeout time.Duration) error {
-	s, err := c.GetActiveSession()
-	if err != nil {
+func (c *client) WritePkg(pkg interface{}, timeout time.Duration) (err error) {
+	var s Session
+	if s, err = c.GetActiveSession(); err != nil {
 		return err
 	}
 	return s.WritePkg(pkg, timeout)
 }
 
-func (c *client) WriteBytes(data []byte) error {
-	s, err := c.GetActiveSession()
-	if err != nil {
+func (c *client) WriteBytes(data []byte) (err error) {
+	var s Session
+	if s, err = c.GetActiveSession(); err != nil {
 		return err
 	}
 	return s.WriteBytes(data)
 }
 
-func (c *client) WriteBytesArray(data ...[]byte) error {
-	s, err := c.GetActiveSession()
-	if err != nil {
+func (c *client) WriteBytesArray(data ...[]byte) (err error) {
+	var s Session
+	if s, err = c.GetActiveSession(); err != nil {
 		return err
 	}
 	return s.WriteBytesArray(data...)

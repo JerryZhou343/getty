@@ -21,6 +21,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -34,6 +35,7 @@ import (
 import (
 	log "github.com/AlexStocks/log4go"
 	"github.com/dubbogo/gost/net"
+	gxsync "github.com/dubbogo/gost/sync"
 	"github.com/gorilla/websocket"
 	jerrors "github.com/juju/errors"
 )
@@ -287,6 +289,10 @@ func (s *server) runTcpEventLoop(newSession NewSessionCallback) {
 	}()
 }
 
+func (s *server) GetTaskPool() *gxsync.TaskPool {
+	return s.tPool
+}
+
 func (s *server) runUDPEventLoop(newSession NewSessionCallback) {
 	s.wg.Add(1)
 	go func() {
@@ -487,15 +493,16 @@ func (s *server) Close() {
 	s.wg.Wait()
 }
 
+var notImplement = errors.New("Not implemented")
 
 func (s *server) WritePkg(pkg interface{}, timeout time.Duration) error {
-	return nil
+	return notImplement
 }
 
 func (s *server) WriteBytes(data []byte) error {
-	return nil
+	return notImplement
 }
 
 func (s *server) WriteBytesArray(data ...[]byte) error {
-	return nil
+	return notImplement
 }
